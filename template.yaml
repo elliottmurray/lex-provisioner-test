@@ -1,0 +1,128 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: 'nib.com.au Chatbot'
+Parameters:
+  # add prefix to limit which resources are controlled by this template
+  NamePrefix:
+    Type: String
+    Description: Prefix to add to Lex resource names
+    MinLength: 3
+    MaxLength: 32
+    AllowedPattern: '^[a-zA-Z\._]+$'
+    ConstraintDescription: Must conform with the permitted Lex Bot name pattern.
+  LexDefinitionChecksum:
+    Type: String
+    Description: JSON representation of Lex resources
+Resources:
+  # custom resource to manage lex bot
+  LexBot:
+    Type: Custom::LexBot
+    Properties:
+      ServiceToken: !GetAtt LexProvisioner.Arn
+      NamePrefix: !Ref NamePrefix
+      loglevel: 'info'
+      LexDefinitionChecksum: !Ref LexDefinitionChecksum
+    DependsOn:
+      - greetingCodeHook
+  greetingCodeHook:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      FunctionName: !Sub "${NamePrefix}greetingCodeHook"
+      Handler: greeting/index.handler
+      Runtime: nodejs6.10
+      CodeUri: ./lambda_functions
+      Description: Validate request for 'greeting'
+      MemorySize: 128
+      Timeout: 10
+      Role: !GetAtt LexLambdaRole.Arn
+      Tags:
+        purpose: chatbot
+    DependsOn:
+      - LexLambdaRole
+  LexLambdaRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: !Sub "${NamePrefix}LexLambdaInteraction"
+      Path: '/service-role/'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              Service:
+                - 'lambda.amazonaws.com'
+            Action:
+              - 'sts:AssumeRole'
+  LogsForLambda:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyName: !Sub "${NamePrefix}-LogsForLexLambda"
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          -
+            Effect: Allow
+            Action:
+              - 'logs:CreateLogGroup'
+              - 'logs:CreateLogStream'
+              - 'logs:PutLogEvents'
+            Resource:
+              - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/*"
+              - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/*:*"
+      Roles:
+        - Ref: LexLambdaRole
+        - Ref: LexProvisionerRole
+        - Ref: ProxyLambdaRole
+        - Ref: PushToSumoRole
+  LexProvisionerRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: !Sub "${NamePrefix}-lex-provisioner"
+      Path: '/service-role/'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - 'lambda.amazonaws.com'
+            Action:
+              - 'sts:AssumeRole'
+      Policies:
+        - PolicyName: !Sub "${NamePrefix}LambdaAddPermission"
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - lambda:AddPermission
+                Resource: '*'
+        - PolicyName: !Sub "${NamePrefix}LexGet"
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - lex:Get*
+                Resource: '*'
+        - PolicyName: !Sub "${NamePrefix}LexMutating"
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - lex:Put*
+                  - lex:Delete*
+                  - lex:Create*
+                Resource:
+                  - !Sub "arn:aws:lex:${AWS::Region}:${AWS::AccountId}:bot:${NamePrefix}*:*"
+                  - !Sub "arn:aws:lex:${AWS::Region}:${AWS::AccountId}:intent:${NamePrefix}*:*"
+                  - !Sub "arn:aws:lex:${AWS::Region}:${AWS::AccountId}:slottype:${NamePrefix}*:*"
+Outputs:
+  BotName:
+    Description: Lex Bot Name
+    Value: !Sub "${LexBot.BotName}"
+  BotVersion:
+    Description: Lex Bot version
+    Value: !Sub "${LexBot.BotVersion}"
