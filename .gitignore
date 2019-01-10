@@ -1,0 +1,31 @@
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+
+# npm
+node_modules/
+npm-debug.log*
+npm-debug.log.*
+.npmrc
+.nvmrc
+
+# editors
+.idea
+.vscode
+
+# project
+dist/
+tmp/
+
+.envrc
+.direnv/
+.env
+
+coverage/
+.nyc_output/
+
+jest_0/
+
+*.tar.gz
+

@@ -1,27 +1,24 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
-Description: 'nib.com.au Chatbot'
+Description: 'dius.com.au Chatbot'
 Parameters:
   # add prefix to limit which resources are controlled by this template
   NamePrefix:
     Type: String
     Description: Prefix to add to Lex resource names
+    Default: "elliott_test"
     MinLength: 3
     MaxLength: 32
     AllowedPattern: '^[a-zA-Z\._]+$'
     ConstraintDescription: Must conform with the permitted Lex Bot name pattern.
-  LexDefinitionChecksum:
-    Type: String
-    Description: JSON representation of Lex resources
 Resources:
   # custom resource to manage lex bot
   LexBot:
     Type: Custom::LexBot
     Properties:
-      ServiceToken: !GetAtt LexProvisioner.Arn
+      ServiceToken: Fn::ImportValue "lex-provisioner-LexProvisioner"
       NamePrefix: !Ref NamePrefix
       loglevel: 'info'
-      LexDefinitionChecksum: !Ref LexDefinitionChecksum
     DependsOn:
       - greetingCodeHook
   greetingCodeHook:
@@ -29,8 +26,8 @@ Resources:
     Properties:
       FunctionName: !Sub "${NamePrefix}greetingCodeHook"
       Handler: greeting/index.handler
-      Runtime: nodejs6.10
-      CodeUri: ./lambda_functions
+      Runtime: nodejs8.10
+      CodeUri: src/
       Description: Validate request for 'greeting'
       MemorySize: 128
       Timeout: 10
@@ -73,8 +70,6 @@ Resources:
       Roles:
         - Ref: LexLambdaRole
         - Ref: LexProvisionerRole
-        - Ref: ProxyLambdaRole
-        - Ref: PushToSumoRole
   LexProvisionerRole:
     Type: 'AWS::IAM::Role'
     Properties:
