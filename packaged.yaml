@@ -13,7 +13,7 @@ Parameters:
   NamePrefix:
     AllowedPattern: ^[a-zA-Z\._]+$
     ConstraintDescription: Must conform with the permitted Lex Bot name pattern.
-    Default: elliott_test
+    Default: elliotttest
     Description: Prefix to add to Lex resource names
     MaxLength: 32
     MinLength: 3

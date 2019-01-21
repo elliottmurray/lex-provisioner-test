@@ -2,11 +2,10 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 Description: 'dius.com.au Chatbot'
 Parameters:
-  # add prefix to limit which resources are controlled by this template
   NamePrefix:
     Type: String
     Description: Prefix to add to Lex resource names
-    Default: "elliott_test"
+    Default: "elliotttest"
     MinLength: 3
     MaxLength: 32
     AllowedPattern: '^[a-zA-Z\._]+$'
@@ -19,8 +18,6 @@ Resources:
       ServiceToken: Fn::ImportValue "lex-provisioner-LexProvisioner"
       NamePrefix: !Ref NamePrefix
       loglevel: 'info'
-    Parameters:
-      DefinitionFile: 's3://somepath'
     DependsOn:
       - greetingCodeHook
   greetingCodeHook:
