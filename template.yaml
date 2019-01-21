@@ -19,6 +19,8 @@ Resources:
       ServiceToken: Fn::ImportValue "lex-provisioner-LexProvisioner"
       NamePrefix: !Ref NamePrefix
       loglevel: 'info'
+    Parameters:
+      DefinitionFile: 's3://somepath'
     DependsOn:
       - greetingCodeHook
   greetingCodeHook:

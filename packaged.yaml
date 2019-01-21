@@ -1,0 +1,134 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: dius.com.au Chatbot
+Outputs:
+  BotName:
+    Description: Lex Bot Name
+    Value:
+      Fn::Sub: ${LexBot.BotName}
+  BotVersion:
+    Description: Lex Bot version
+    Value:
+      Fn::Sub: ${LexBot.BotVersion}
+Parameters:
+  NamePrefix:
+    AllowedPattern: ^[a-zA-Z\._]+$
+    ConstraintDescription: Must conform with the permitted Lex Bot name pattern.
+    Default: elliott_test
+    Description: Prefix to add to Lex resource names
+    MaxLength: 32
+    MinLength: 3
+    Type: String
+Resources:
+  LexBot:
+    DependsOn:
+    - greetingCodeHook
+    Parameters:
+      DefinitionFile: s3://somepath
+    Properties:
+      NamePrefix:
+        Ref: NamePrefix
+      ServiceToken: Fn::ImportValue "lex-provisioner-LexProvisioner"
+      loglevel: info
+    Type: Custom::LexBot
+  LexLambdaRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+        Version: '2012-10-17'
+      Path: /service-role/
+      RoleName:
+        Fn::Sub: ${NamePrefix}LexLambdaInteraction
+    Type: AWS::IAM::Role
+  LexProvisionerRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action:
+          - sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+        Version: '2012-10-17'
+      Path: /service-role/
+      Policies:
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - lambda:AddPermission
+            Effect: Allow
+            Resource: '*'
+          Version: 2012-10-17
+        PolicyName:
+          Fn::Sub: ${NamePrefix}LambdaAddPermission
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - lex:Get*
+            Effect: Allow
+            Resource: '*'
+          Version: 2012-10-17
+        PolicyName:
+          Fn::Sub: ${NamePrefix}LexGet
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - lex:Put*
+            - lex:Delete*
+            - lex:Create*
+            Effect: Allow
+            Resource:
+            - Fn::Sub: arn:aws:lex:${AWS::Region}:${AWS::AccountId}:bot:${NamePrefix}*:*
+            - Fn::Sub: arn:aws:lex:${AWS::Region}:${AWS::AccountId}:intent:${NamePrefix}*:*
+            - Fn::Sub: arn:aws:lex:${AWS::Region}:${AWS::AccountId}:slottype:${NamePrefix}*:*
+          Version: 2012-10-17
+        PolicyName:
+          Fn::Sub: ${NamePrefix}LexMutating
+      RoleName:
+        Fn::Sub: ${NamePrefix}-lex-provisioner
+    Type: AWS::IAM::Role
+  LogsForLambda:
+    Properties:
+      PolicyDocument:
+        Statement:
+        - Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          Effect: Allow
+          Resource:
+          - Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/*
+          - Fn::Sub: arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/*:*
+        Version: '2012-10-17'
+      PolicyName:
+        Fn::Sub: ${NamePrefix}-LogsForLexLambda
+      Roles:
+      - Ref: LexLambdaRole
+      - Ref: LexProvisionerRole
+    Type: AWS::IAM::Policy
+  greetingCodeHook:
+    DependsOn:
+    - LexLambdaRole
+    Properties:
+      CodeUri: s3://elliott-provisioner/51effb6c823cfc2ac21c3f27a5de741e
+      Description: Validate request for 'greeting'
+      FunctionName:
+        Fn::Sub: ${NamePrefix}greetingCodeHook
+      Handler: greeting/index.handler
+      MemorySize: 128
+      Role:
+        Fn::GetAtt:
+        - LexLambdaRole
+        - Arn
+      Runtime: nodejs8.10
+      Tags:
+        purpose: chatbot
+      Timeout: 10
+    Type: AWS::Serverless::Function
+Transform: AWS::Serverless-2016-10-31
