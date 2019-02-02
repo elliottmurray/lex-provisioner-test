@@ -15,7 +15,7 @@ Resources:
   LexBot:
     Type: Custom::LexBot
     Properties:
-      ServiceToken: Fn::ImportValue "lex-provisioner-LexProvisioner"
+      ServiceToken: !ImportValue  'lex-provisioner-LexProvisioner'
       NamePrefix: !Ref NamePrefix
       loglevel: 'info'
     DependsOn:
@@ -82,7 +82,7 @@ Resources:
               Service:
                 - 'lambda.amazonaws.com'
             Action:
-              - 'sts:AssumeRole'
+              - sts:AssumeRole
       Policies:
         - PolicyName: !Sub "${NamePrefix}LambdaAddPermission"
           PolicyDocument:

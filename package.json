@@ -15,7 +15,7 @@
     "create-bucket": "aws s3 mb s3://$npm_package_config_s3BucketName --region $npm_package_config_region",
     "delete-bucket": "aws s3 rb s3://$npm_package_config_s3BucketName --region $npm_package_config_region",
     "package": "aws cloudformation package --template-file ./template.yaml --output-template-file ./output.yaml --s3-bucket $npm_package_config_s3BucketName",
-    "deploy": "aws cloudformation deploy --template-file ./output.yaml --stack-name $npm_package_config_stackName --capabilities CAPABILITY_NAMED_IAM",
+    "deploy": "aws cloudformation deploy --template-file ./output.yaml --stack-name $npm_package_config_stackName --capabilities CAPABILITY_NAMED_IAM --region $npm_package_config_region",
     "test": "jest --config ./jest.config.json",
     "test:ci": "jest --config ./jestci.config.json"
   },
