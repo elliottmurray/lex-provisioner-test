@@ -1,0 +1,42 @@
+{
+  "bot": {
+    "abortStatement": {
+      "messages": [
+        {
+          "content": "I'm sorry, but I am having trouble understanding. I'm going to pass you over to one of my team mates (they're human!). Please wait to be connected, they will have any information we have discussed.",
+          "contentType": "PlainText"
+        }
+      ]
+    },
+    "processBehavior": "BUILD",
+    "childDirected": false,
+    "clarificationPrompt": {
+      "maxAttempts": 1,
+      "messages": [
+        {
+          "content": "Hmm, I am sorry but I am still learning and I'm not familiar with those words. Could you try again using different words?",
+          "contentType": "PlainText"
+        }
+      ]
+    },
+    "description": "friendly AI chatbot overlord",
+    "idleSessionTTLInSeconds": 300,
+    "intents": [
+      {
+        "intentName": "Greeting",
+        "intentVersion": "$LATEST"
+      }
+    ],
+    "locale": "en-US",
+    "name": "Provisioner test"
+  },
+  "intents": [
+    {
+      "intentDefinition": "src/greeting/intent-definition.json",
+      "dialogCodeHook": {
+        "messageVersion": "1.0",
+        "uri": "greetingCodeHook"
+      }
+    }
+  ]
+}

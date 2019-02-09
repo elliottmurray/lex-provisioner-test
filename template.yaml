@@ -10,6 +10,24 @@ Parameters:
     MaxLength: 32
     AllowedPattern: '^[a-zA-Z\._]+$'
     ConstraintDescription: Must conform with the permitted Lex Bot name pattern.
+  owner:
+    Type: String
+    Description: Internal tags for monitoring users on internal aws account
+    Default: emurray@dius.com.au
+    MinLength: 3
+    MaxLength: 32
+  expiryDate:
+    Type: String
+    Description: Internal tags for monitoring expiry date on internal aws account
+    Default: 2019-05-04
+    MinLength: 3
+    MaxLength: 32
+  purpose:
+    Type: String
+    Description: Internal tags for monitoring purpose on internal aws account
+    Default: Developing tools for chatbots
+    MinLength: 3
+    MaxLength: 128
 Resources:
   # custom resource to manage lex bot
   LexBot:
@@ -18,6 +36,9 @@ Resources:
       ServiceToken: !ImportValue  'lex-provisioner-LexProvisioner'
       NamePrefix: !Ref NamePrefix
       loglevel: 'info'
+      dialogCodeHookUri: greetingCodeHook
+      test:
+        embed: works
     DependsOn:
       - greetingCodeHook
   greetingCodeHook:
@@ -32,7 +53,9 @@ Resources:
       Timeout: 10
       Role: !GetAtt LexLambdaRole.Arn
       Tags:
-        purpose: chatbot
+        owner: !Ref owner
+        expiryDate: !Ref expiryDate
+        purpose: !Ref purpose
     DependsOn:
       - LexLambdaRole
   LexLambdaRole:

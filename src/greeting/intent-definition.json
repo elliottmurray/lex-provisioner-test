@@ -1,0 +1,84 @@
+{
+  "name": "Greeting",
+  "sampleUtterances": [
+    "hello",
+    "hi"
+  ],
+  "dialogCodeHook": {
+    "messageVersion": "1.0",
+    "uri": "greetingCodeHook"
+  },
+  "slots": [
+    {
+      "name": "name",
+      "priority": 2,
+      "sampleUtterances": [
+        "My name is {name}",
+        "Hi my name is {name} and I'd like some help",
+        "{name} and I want to know more",
+        "My name is {name} and I want help",
+        "my name is {name} and i want tax certificate",
+        "Hi Nibby I'm {name} from country and I need to get help",
+        "Hi Nibby I'm {name} I'm from Colombia and I need to get"
+      ],
+      "slotConstraint": "Required",
+      "slotType": "AMAZON.Person",
+      "valueElicitationPrompt": {
+        "maxAttempts": 2,
+        "messages": [
+          {
+            "content": "Great thanks, please enter your name.",
+            "contentType": "PlainText"
+          }
+        ]
+      }
+    },
+    {
+      "name": "visaStatus",
+      "priority": 1,
+      "sampleUtterances": [
+        "{visaStatus} and a NIB Member",
+        "{visaStatus} nib number",
+        "{visaStatus} policy number",
+        "{visaStatus} my policy number is",
+        "{visaStatus} gave you my member number",
+        "I am {visaStatus} I have nib healthcover",
+        "Yes from {visaStatus}",
+        "could you please confirm that your cover is suitable for a {visaStatus}",
+        "could you please confirm that your cover is suitable for a guardian {visaStatus}"
+      ],
+      "slotConstraint": "Required",
+      "slotType": "VisaStatus",
+      "slotTypeVersion": "$LATEST",
+      "valueElicitationPrompt": {
+        "maxAttempts": 2,
+        "messages": [
+          {
+            "content": "Thanks! So that I can direct you to the right place, are you an Australian Resident, Overseas Worker or Overseas Student?",
+            "contentType": "PlainText"
+          }
+        ]
+      }
+    }
+  ],
+  "slot_types": [
+    {
+      "name": "VisaStatus",
+      "enumerationValues": [
+        {
+          "synonyms": [ "aus resident", "australian resident", "aussie resident", "PR", "pr", "Oz", "Ozzie", "Aus Rez", "Australian Rez", "Ozzie Rez", "Oz Res", "Ozzie Res", "Oz Rez", "Aussie Rez", "Resident", "AR", "Aust resident", "Oz resident", "Sydney", "Melbourne", "Perth", "Newcastle", "Brisbane", "Canberra", "Adelaide" ],
+          "value": "Australian Resident"
+        },
+        {
+          "synonyms": [ "O/S", "O/S worker", "O/seas", "intl worker", "worker", "overseas worker", "Overseas",  "International", "Int", "international visitor", "Int visitor", "Int vis", "IMAN", "nib IMAN", "Temporary resident" ],
+          "value": "Overseas Worker"
+        },
+        {
+          "synonyms": [ "student", "overseas student", "OSHC", "nib OSHC", "student visa application" ],
+          "value": "Overseas Student"
+        }
+      ],
+      "valueSelectionStrategy": "TOP_RESOLUTION"
+    }
+  ]
+}
