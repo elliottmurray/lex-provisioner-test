@@ -16,12 +16,16 @@
     "delete-bucket": "aws s3 rb s3://$npm_package_config_s3BucketName --region $npm_package_config_region",
     "package": "aws cloudformation package --template-file ./template.yaml --output-template-file ./output.yaml --s3-bucket $npm_package_config_s3BucketName",
     "deploy": "aws cloudformation deploy --template-file ./output.yaml --stack-name $npm_package_config_stackName --capabilities CAPABILITY_NAMED_IAM --region $npm_package_config_region",
+    "delete": "aws cloudformation delete-stack --stack-name elliott-test",
+    "tail": "tail-stack-events -s $npm_package_config_stackName --die",
     "test": "jest --config ./jest.config.json",
     "test:ci": "jest --config ./jestci.config.json"
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "tail-stack-events": "^1.2.0"
+  },
   "devDependencies": {
     "aws-sdk": "^2.140.0",
     "babel-cli": "^6.8.0",

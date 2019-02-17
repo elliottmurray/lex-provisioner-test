@@ -31,3 +31,8 @@ aws cloudformation describe-stacks \
     --stack-name <NAME> \
     --query 'Stacks[].Outputs'
 ```
+
+```bash
+aws cloudformation delete-stack --stack-name <NAME>
+```
+

@@ -2,6 +2,11 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 Description: 'dius.com.au Chatbot'
 Parameters:
+  LexProvisionerFunctionArn:
+    Type: String
+    Description: the ARN of the custom resource (this is an output of the previous
+      CloudFormation stack)
+    Default: 'arn:aws:lambda:us-east-1:773592622512:function:lex-provisioner-LexProvisioner-11UR1ZOI224RM'
   NamePrefix:
     Type: String
     Description: Prefix to add to Lex resource names
@@ -36,7 +41,14 @@ Resources:
       ServiceToken: !ImportValue  'lex-provisioner-LexProvisioner'
       NamePrefix: !Ref NamePrefix
       loglevel: 'info'
+      description: 'elliott test bot'
       dialogCodeHookUri: greetingCodeHook
+      locale: 'en-US'
+      clarification:
+        message: 'clarification statement'
+      abortStatement:
+        message: 'abort statement'
+      intents: [ 'greeting' ]
       test:
         embed: works
     DependsOn:
@@ -91,51 +103,6 @@ Resources:
               - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/*:*"
       Roles:
         - Ref: LexLambdaRole
-        - Ref: LexProvisionerRole
-  LexProvisionerRole:
-    Type: 'AWS::IAM::Role'
-    Properties:
-      RoleName: !Sub "${NamePrefix}-lex-provisioner"
-      Path: '/service-role/'
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - 'lambda.amazonaws.com'
-            Action:
-              - sts:AssumeRole
-      Policies:
-        - PolicyName: !Sub "${NamePrefix}LambdaAddPermission"
-          PolicyDocument:
-            Version: 2012-10-17
-            Statement:
-              - Effect: Allow
-                Action:
-                  - lambda:AddPermission
-                Resource: '*'
-        - PolicyName: !Sub "${NamePrefix}LexGet"
-          PolicyDocument:
-            Version: 2012-10-17
-            Statement:
-              - Effect: Allow
-                Action:
-                  - lex:Get*
-                Resource: '*'
-        - PolicyName: !Sub "${NamePrefix}LexMutating"
-          PolicyDocument:
-            Version: 2012-10-17
-            Statement:
-              - Effect: Allow
-                Action:
-                  - lex:Put*
-                  - lex:Delete*
-                  - lex:Create*
-                Resource:
-                  - !Sub "arn:aws:lex:${AWS::Region}:${AWS::AccountId}:bot:${NamePrefix}*:*"
-                  - !Sub "arn:aws:lex:${AWS::Region}:${AWS::AccountId}:intent:${NamePrefix}*:*"
-                  - !Sub "arn:aws:lex:${AWS::Region}:${AWS::AccountId}:slottype:${NamePrefix}*:*"
 Outputs:
   BotName:
     Description: Lex Bot Name
