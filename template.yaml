@@ -48,9 +48,15 @@ Resources:
         message: 'clarification statement'
       abortStatement:
         message: 'abort statement'
-      intents: [ 'greeting' ]
-      test:
-        embed: works
+      intents:  
+        - Name: 'greeting' 
+          Codehook: !GetAtt greetingCodeHook.Arn
+          Plaintext:
+            confirmation: 'Confirmation meessage'
+            rejection: 'Can not understand you'
+            followUpPrompt: 'Anything else?'
+            followUpRejection: 'I cannot finish this chat'
+            confirmation: 'Here is your result'
     DependsOn:
       - greetingCodeHook
   greetingCodeHook:
