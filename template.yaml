@@ -42,7 +42,6 @@ Resources:
       NamePrefix: !Ref NamePrefix
       loglevel: 'info'
       description: 'elliott test bot'
-      dialogCodeHookUri: greetingCodeHook
       locale: 'en-US'
       clarification:
         message: 'clarification statement'
@@ -50,29 +49,24 @@ Resources:
         message: 'abort statement'
       intents:
         - Name: 'greeting'
-          Codehook: !GetAtt greetingCodeHook.Arn
+          maxAttempts: 3
+          CodehookArn: !GetAtt greetingCodeHook.Arn
+          Utterances:
+            - 'How you doing'
+            - 'Hello'
+            - 'Welcome'
           Plaintext:
             confirmation: 'Confirmation meessage'
             rejection: 'Can not understand you'
             followUpPrompt: 'Anything else?'
             followUpRejection: 'I cannot finish this chat'
-            confirmation: 'Here is your result'
-      intents:
-        - Name: 'greeting'
-          Codehook: 'thankyouCodeHook'
-          maxAttempts: '3'
-          Plaintext:
-            confirmation: 'confirmation'
-            rejection: 'rejection'
-            conclusion: 'conclusion'
-      test:
-        embed: works
+            conclusion: 'Here is your result'
     DependsOn:
       - greetingCodeHook
   greetingCodeHook:
     Type: 'AWS::Serverless::Function'
+    FunctionName: !Sub "${NamePrefix}greetingCodeHook"
     Properties:
-      FunctionName: !Sub "${NamePrefix}greetingCodeHook"
       Handler: greeting/index.handler
       Runtime: nodejs8.10
       CodeUri: src/
