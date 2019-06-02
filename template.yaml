@@ -58,8 +58,6 @@ Resources:
           Plaintext:
             confirmation: 'Confirmation meessage'
             rejection: 'Can not understand you'
-            followUpPrompt: 'Anything else?'
-            followUpRejection: 'I cannot finish this chat'
             conclusion: 'Here is your result'
     DependsOn:
       - greetingCodeHook
