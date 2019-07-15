@@ -82,7 +82,7 @@ Resources:
         purpose: !Ref purpose
     DependsOn:
       - LexLambdaRole
-      - LogsForLambda 
+      - LogsForLambda
   LexLambdaRole:
     Type: 'AWS::IAM::Role'
     Properties:
