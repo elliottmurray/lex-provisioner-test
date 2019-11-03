@@ -59,6 +59,10 @@ Resources:
             confirmation: 'Confirmation meessage'
             rejection: 'Can not understand you'
             conclusion: 'Here is your result'
+      slotTypes:
+        pizzasize:
+          - 'Thick'
+          - 'Thin'
     DependsOn:
       - greetingCodeHook
   greetingCodeHook:

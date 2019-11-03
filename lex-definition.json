@@ -38,5 +38,25 @@
         "uri": "greetingCodeHook"
       }
     }
+  ],
+  "slot_types": [
+    {
+      "name": "BeerSize",
+      "enumerationValues": [
+        {
+          "synonyms": [ "usual", "your round"],
+          "value": "Pint"
+        },
+        {
+          "synonyms": [ "schoonie", "pot"],
+          "value": "Schooner"
+        },
+        {
+          "synonyms": [ "lots", "jug"],
+          "value": "Jug"
+        }
+      ],
+      "valueSelectionStrategy": "TOP_RESOLUTION"
+    }
   ]
 }
