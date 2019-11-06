@@ -74,12 +74,13 @@ Resources:
                 - 'What day do you want the stuff to be picked up?'
                 - 'Have a day you would like to arrange the pickup?'
       slotTypes:
-        lexGreeting:
-          thick:
-            - 'fat'
-            - 'thick'
-          thin:
-            - 'skinny'
+        -
+          lexGreeting:
+            thick:
+              - 'fat'
+              - 'thick'
+            thin:
+              - 'skinny'
     DependsOn:
       - greetingCodeHook
   greetingCodeHook:
