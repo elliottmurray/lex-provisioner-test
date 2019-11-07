@@ -6,7 +6,7 @@ Parameters:
     Type: String
     Description: the ARN of the custom resource (this is an output of the previous
       CloudFormation stack)
-    Default: 'arn:aws:lambda:us-east-1:773592622512:function:lex-provisioner-LexProvisioner-11UR1ZOI224RM'
+    Default: 'arn:aws:lambda:us-east-1:773592622512:function:lex-provisioner-LexProvisioner-B0C3XBMMYJZC'
   NamePrefix:
     Type: String
     Description: Prefix to add to Lex resource names
@@ -74,13 +74,12 @@ Resources:
                 - 'What day do you want the stuff to be picked up?'
                 - 'Have a day you would like to arrange the pickup?'
       slotTypes:
-        -
-          lexGreeting:
-            thick:
-              - 'fat'
-              - 'thick'
-            thin:
-              - 'skinny'
+        lexGreeting:
+          thick:
+            - 'fat'
+            - 'thick'
+          thin:
+            - 'skinny'
     DependsOn:
       - greetingCodeHook
   greetingCodeHook:

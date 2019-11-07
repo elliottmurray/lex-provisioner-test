@@ -5,7 +5,7 @@
   "main": "index.js",
   "config": {
     "s3BucketName": "elliott-provisioner",
-    "stackName": "elliott-test",
+    "stackName": "elliott-test3",
     "region": "us-east-1"
   },
   "jest": {
