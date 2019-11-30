@@ -43,10 +43,9 @@ Resources:
       loglevel: 'info'
       description: 'elliott test bot'
       locale: 'en-US'
-      clarification:
-        message: 'clarification statement'
-      abortStatement:
-        message: 'abort statement'
+      messages:
+        clarification: 'clarification statement'
+        abortStatement: 'abort statement'
       intents:
         - Name: 'greeting'
           maxAttempts: 3
@@ -63,12 +62,14 @@ Resources:
             -
               Name: 'PickupTime'
               Type: 'AMAZON.TIME'
+              Prompt: 'Pizza please'
               Priority: 2
               Utterances:
                 - 'Pick up the stuff at what time on {PickupDate}?'
             -
               Name: 'PickupDate'
               Type: 'AMAZON.TIME'
+              Prompt: 'what day'
               Priority: 1
               Utterances:
                 - 'What day do you want the stuff to be picked up?'
