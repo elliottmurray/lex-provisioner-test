@@ -65,15 +65,15 @@ Resources:
               Prompt: 'Pizza please'
               Priority: 2
               Utterances:
-                - 'Pick up the stuff at what time on {PickupDate}?'
+                - 'Pick up the stuff at what time on {PickupDate}'
             -
               Name: 'PickupDate'
               Type: 'AMAZON.TIME'
               Prompt: 'what day'
               Priority: 1
               Utterances:
-                - 'What day do you want the stuff to be picked up?'
-                - 'Have a day you would like to arrange the pickup?'
+                - 'What day do you want the stuff to be picked up'
+                - 'Have a day you would like to arrange the pickup'
       slotTypes:
         -
           lexGreeting:
