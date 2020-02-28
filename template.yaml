@@ -34,11 +34,20 @@ Parameters:
     MinLength: 3
     MaxLength: 128
 Resources:
+  LexBotApp:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location:
+        ApplicationId: arn:aws:serverlessrepo:us-east-1:773592622512:applications/my-app
+        SemanticVersion: 0.0.169
   # custom resource to manage lex bot
   LexBot:
     Type: Custom::LexBot
     Properties:
-      ServiceToken: !ImportValue 'lex-provisioner-LexProvisioner'
+      ServiceToken:
+        Fn::GetAtt:
+          - LexBotApp
+          - Outputs.LexProvisionerARN
       NamePrefix: !Ref NamePrefix
       loglevel: 'info'
       description: 'elliott test bot'
