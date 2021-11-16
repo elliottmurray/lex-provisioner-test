@@ -27,7 +27,7 @@
     "tail-stack-events": "^1.2.0"
   },
   "devDependencies": {
-    "aws-sdk": "^2.140.0",
+    "aws-sdk": "^2.814.0",
     "babel-cli": "^6.8.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.0",
